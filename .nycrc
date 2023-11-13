@@ -1,0 +1,13 @@
+{
+  "extends": "@istanbuljs/nyc-config-typescript",
+  "all": true,
+  "include": [
+    "pages/**/*.@(ts|tsx)",
+    "components/**/*.@(ts|tsx)",
+    "utils/**/*.@(ts|tsx)"
+  ],
+  "exclude": [
+    "pages/api/coverage.ts",
+    "components/glcp-components/**/*.@(js|jsx|ts|tsx)"
+  ]
+}

@@ -1,0 +1,10 @@
+# untouched copied files from glcp/frontend
+/components/glcp-components/*
+
+# build / generated files
+/.next/
+/public/mockServiceWorker.js
+/.nyc_output/
+
+# prettier thinks this is an .md file when it is not
+CODEOWNERS
