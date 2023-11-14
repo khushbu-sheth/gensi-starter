@@ -7,12 +7,14 @@ import {
   GridColumnsType,
   GridExtendedProps,
   GridSizeType,
+  Button,
 } from "grommet";
+import { Close, Chat } from "grommet-icons";
 import type { NextPage } from "next";
 import { CarbonEmissionsPanel } from "../components/CarbonEmissionsPanel";
 import { EnergyConsumptionPanel } from "../components/EnergyConsumptionPanel";
 import { EnergyCostPanel } from "../components/EnergyCostPanel";
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import {
@@ -23,12 +25,6 @@ import {
   MessageInput,
   TypingIndicator,
 } from "@chatscope/chat-ui-kit-react";
-import Chatbot from "react-chatbot-kit";
-
-import config from "./chatbot/config";
-import MessageParser from "./chatbot/MessageParser";
-import ActionProvider from "./chatbot/ActionProvider";
-import "react-chatbot-kit/build/main.css";
 
 const columns: Record<string, GridColumnsType> = {
   xsmall: ["auto"],
@@ -105,116 +101,6 @@ const statsData = {
         formats: ["MMM dd", "h a"],
       },
     },
-    {
-      kwh: 2,
-      cost_usd: 4,
-      co2e_metric_ton: 24,
-      timeStart: "2023-11-08T12:00:00.000Z",
-      timeResolution: {
-        name: "12 Hours",
-        formats: ["MMM dd", "h a"],
-      },
-    },
-    {
-      kwh: 2,
-      cost_usd: 1,
-      co2e_metric_ton: 15,
-      timeStart: "2023-11-09T00:00:00.000Z",
-      timeResolution: {
-        name: "12 Hours",
-        formats: ["MMM dd", "h a"],
-      },
-    },
-    {
-      kwh: 2,
-      cost_usd: 4,
-      co2e_metric_ton: 21,
-      timeStart: "2023-11-09T12:00:00.000Z",
-      timeResolution: {
-        name: "12 Hours",
-        formats: ["MMM dd", "h a"],
-      },
-    },
-    {
-      kwh: null,
-      cost_usd: null,
-      co2e_metric_ton: null,
-      timeStart: "2023-11-10T00:00:00.000Z",
-      timeResolution: {
-        name: "12 Hours",
-        formats: ["MMM dd", "h a"],
-      },
-    },
-    {
-      kwh: null,
-      cost_usd: null,
-      co2e_metric_ton: null,
-      timeStart: "2023-11-10T12:00:00.000Z",
-      timeResolution: {
-        name: "12 Hours",
-        formats: ["MMM dd", "h a"],
-      },
-    },
-    {
-      kwh: null,
-      cost_usd: null,
-      co2e_metric_ton: null,
-      timeStart: "2023-11-11T00:00:00.000Z",
-      timeResolution: {
-        name: "12 Hours",
-        formats: ["MMM dd", "h a"],
-      },
-    },
-    {
-      kwh: 1,
-      cost_usd: 8,
-      co2e_metric_ton: 4,
-      timeStart: "2023-11-11T12:00:00.000Z",
-      timeResolution: {
-        name: "12 Hours",
-        formats: ["MMM dd", "h a"],
-      },
-    },
-    {
-      kwh: 1,
-      cost_usd: 8,
-      co2e_metric_ton: 16,
-      timeStart: "2023-11-12T00:00:00.000Z",
-      timeResolution: {
-        name: "12 Hours",
-        formats: ["MMM dd", "h a"],
-      },
-    },
-    {
-      kwh: 1,
-      cost_usd: 3,
-      co2e_metric_ton: 21,
-      timeStart: "2023-11-12T12:00:00.000Z",
-      timeResolution: {
-        name: "12 Hours",
-        formats: ["MMM dd", "h a"],
-      },
-    },
-    {
-      kwh: 2,
-      cost_usd: 2,
-      co2e_metric_ton: 7,
-      timeStart: "2023-11-13T00:00:00.000Z",
-      timeResolution: {
-        name: "12 Hours",
-        formats: ["MMM dd", "h a"],
-      },
-    },
-    {
-      kwh: 1,
-      cost_usd: 2,
-      co2e_metric_ton: 21,
-      timeStart: "2023-11-13T12:00:00.000Z",
-      timeResolution: {
-        name: "12 Hours",
-        formats: ["MMM dd", "h a"],
-      },
-    },
   ],
   isLoading: false,
   isRefetching: false,
@@ -229,8 +115,9 @@ const Home: NextPage = () => {
       sender: "ChatGPT",
     },
   ]);
+
   const [isTyping, setIsTyping] = useState(false);
-  // const handleSendRequest = async (message: any) => {};
+  const [showChatbot, setShowChatbot] = useState(false);
 
   const handleSendRequest = async (message: any) => {
     const newMessage = {
@@ -291,7 +178,7 @@ const Home: NextPage = () => {
   }
 
   return (
-    <Box align="left" gap="small">
+    <>
       <Heading
         color="text"
         margin={{ bottom: "small", top: "small" }}
@@ -313,39 +200,43 @@ const Home: NextPage = () => {
           <EnergyCostPanel statsData={statsData} />
         </Box>
       </ResponsiveGrid>
-      <Box direction="row" gap="medium">
-        <Box fill="horizontal" align="center" justify="center">
-          <Chatbot
-            config={config}
-            messageParser={MessageParser}
-            actionProvider={ActionProvider}
-          />
-        </Box>
-        <Box fill="horizontal" align="center" justify="center">
-          <MainContainer>
-            <ChatContainer>
-              <MessageList
-                scrollBehavior="smooth"
-                typingIndicator={
-                  isTyping ? (
-                    <TypingIndicator content="ChatGPT is typing" />
-                  ) : null
-                }
-              >
-                {messages.map((message, i) => {
-                  console.log(message);
-                  return <Message key={i} model={message as any} />;
-                })}
-              </MessageList>
-              <MessageInput
-                placeholder="Send a Message"
-                onSend={handleSendRequest}
-              />
-            </ChatContainer>
-          </MainContainer>
+      <Box direction="row" gap="medium" height="600px">
+        <Box fill="horizontal" align="end" justify="end">
+          {showChatbot && (
+            <>
+              <Button icon={<Close />} onClick={() => setShowChatbot(false)} />
+              <MainContainer>
+                <ChatContainer>
+                  <MessageList
+                    scrollBehavior="smooth"
+                    typingIndicator={
+                      isTyping ? (
+                        <TypingIndicator content="ChatGPT is typing" />
+                      ) : null
+                    }
+                  >
+                    {messages.map((message, i) => {
+                      console.log(message);
+                      return <Message key={i} model={message as any} />;
+                    })}
+                  </MessageList>
+                  <MessageInput
+                    placeholder="Send a Message"
+                    onSend={handleSendRequest}
+                  />
+                </ChatContainer>
+              </MainContainer>
+            </>
+          )}
+          {!showChatbot && (
+            <Button
+              icon={<Chat size="large" />}
+              onClick={() => setShowChatbot(true)}
+            />
+          )}
         </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 

@@ -47,8 +47,8 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <>
       <Head>
-        <title>Platform Analytics</title>
-        <meta name="description" content="HPE Greenlake Platform Analytics" />
+        <title>GEN AI Dashboard</title>
+        <meta name="description" content="HPE Greenlake GEN AI Dashboard" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <GLCPHeader

@@ -16,6 +16,7 @@
   "dependencies": {
     "@azure/communication-react": "^1.10.0",
     "@chatscope/chat-ui-kit-react": "^1.10.1",
+    "@curo/curo-design-system": "^2.1.0",
     "dayjs": "^1.11.6",
     "grommet": "^2.28.0",
     "grommet-icons": "^4.8.0",
