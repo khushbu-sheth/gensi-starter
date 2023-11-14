@@ -23,6 +23,12 @@ import {
   MessageInput,
   TypingIndicator,
 } from "@chatscope/chat-ui-kit-react";
+import Chatbot from "react-chatbot-kit";
+
+import config from "./chatbot/config";
+import MessageParser from "./chatbot/MessageParser";
+import ActionProvider from "./chatbot/ActionProvider";
+import "react-chatbot-kit/build/main.css";
 
 const columns: Record<string, GridColumnsType> = {
   xsmall: ["auto"],
@@ -285,7 +291,7 @@ const Home: NextPage = () => {
   }
 
   return (
-    <Box align="left" gap="small" pad="medium">
+    <Box align="left" gap="small">
       <Heading
         color="text"
         margin={{ bottom: "small", top: "small" }}
@@ -307,22 +313,38 @@ const Home: NextPage = () => {
           <EnergyCostPanel statsData={statsData} />
         </Box>
       </ResponsiveGrid>
-      {/* <MainContainer> */}
-      <ChatContainer>
-        <MessageList
-          scrollBehavior="smooth"
-          typingIndicator={
-            isTyping ? <TypingIndicator content="ChatGPT is typing" /> : null
-          }
-        >
-          {messages.map((message, i) => {
-            console.log(message);
-            return <Message key={i} model={message as any} />;
-          })}
-        </MessageList>
-        <MessageInput placeholder="Send a Message" onSend={handleSendRequest} />
-      </ChatContainer>
-      {/* </MainContainer> */}
+      <Box direction="row" gap="medium">
+        <Box fill="horizontal" align="center" justify="center">
+          <Chatbot
+            config={config}
+            messageParser={MessageParser}
+            actionProvider={ActionProvider}
+          />
+        </Box>
+        <Box fill="horizontal" align="center" justify="center">
+          <MainContainer>
+            <ChatContainer>
+              <MessageList
+                scrollBehavior="smooth"
+                typingIndicator={
+                  isTyping ? (
+                    <TypingIndicator content="ChatGPT is typing" />
+                  ) : null
+                }
+              >
+                {messages.map((message, i) => {
+                  console.log(message);
+                  return <Message key={i} model={message as any} />;
+                })}
+              </MessageList>
+              <MessageInput
+                placeholder="Send a Message"
+                onSend={handleSendRequest}
+              />
+            </ChatContainer>
+          </MainContainer>
+        </Box>
+      </Box>
     </Box>
   );
 };
