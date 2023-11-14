@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import type { NextPage } from "next";
-import { hpe } from "grommet-theme-hpe";
 
 import {
   Anchor,
@@ -17,37 +16,33 @@ import {
   TextInput,
 } from "grommet";
 import { Close, Next, CircleAlert } from "grommet-icons";
-import { Grommet } from "grommet";
+
+import { useRouter } from "next/router";
 
 const Login: NextPage = () => {
   const [formValues, setFormValues] = React.useState({
-    email: "",
+    cid: "",
     password: "",
   });
   const size = useContext(ResponsiveContext);
-  const [showForgotPassword, setShowForgotPassword] = React.useState(false);
+
   // setPassword is here for demonstration purposes,
   // for calling credential error
   // eslint-disable-next-line no-unused-vars
   const [password, setPassword] = React.useState("");
+  const [cid, setCid] = React.useState("");
   const [credentialError, setCredentialError] = React.useState(false);
-
-  const onClose = () => {
-    setShowForgotPassword(false);
-  };
-
-  const onForgotPassword = () => {
-    setShowForgotPassword(true);
-  };
+  const router = useRouter();
 
   // eslint-disable-next-line no-unused-vars
   const onSubmit = ({ value, touched }) => {
     // Your submission logic here
     // For demonstration purposes, we are mocking a scenario where the password
     // is incorrect. This will cause the error state to appear.
-    if (password !== "password") {
-      setCredentialError(true);
+    if (cid !== "") {
+      localStorage.setItem("cid", cid);
     }
+    router.push("/");
   };
 
   return (
@@ -81,16 +76,18 @@ const Login: NextPage = () => {
           onSubmit={({ value, touched }) => onSubmit({ value, touched })}
         >
           <FormField
-            label="Email"
-            name="email"
-            htmlFor="email-sign-in"
+            label="Customer Id"
+            name="cid"
             required={{ indicator: false }}
           >
             <TextInput
               id="email-sign-in"
-              name="email"
-              placeholder="james@hpe.com"
-              type="email"
+              name="cid"
+              placeholder="Enter customer id"
+              size="medium"
+              onChange={(e) => {
+                setCid(e.target.value);
+              }}
             />
           </FormField>
           <FormField
@@ -104,6 +101,7 @@ const Login: NextPage = () => {
               name="password"
               placeholder="Enter your password"
               type="password"
+              size="medium"
             />
           </FormField>
           {credentialError && (

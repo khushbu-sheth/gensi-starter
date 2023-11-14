@@ -25,6 +25,7 @@ import {
   MessageInput,
   TypingIndicator,
 } from "@chatscope/chat-ui-kit-react";
+import Router from "next/router";
 
 const columns: Record<string, GridColumnsType> = {
   xsmall: ["auto"],
@@ -118,6 +119,12 @@ const Home: NextPage = () => {
 
   const [isTyping, setIsTyping] = useState(false);
   const [showChatbot, setShowChatbot] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem("cid") == null) {
+      Router.push("login");
+    }
+  }, []);
 
   const handleSendRequest = async (message: any) => {
     const newMessage = {
